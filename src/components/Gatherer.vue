@@ -1,7 +1,11 @@
 <template>
-    <button v-on:click="gather(chain.name)" :disabled="disabled">
+    <!--<button v-on:click="gather(chain.name)" :disabled="disabled">-->
+        <!--Gather {{chain.name}}-->
+    <!--</button>-->
+
+    <md-button class="md-raised md-accent" v-on:click="gather(chain.name)" :disabled="disabled">
         Gather {{chain.name}}
-    </button>
+    </md-button>
 </template>
 
 <script>
@@ -20,7 +24,7 @@
         methods: {
             gather(name){
                 this.disabled = true
-                let action = new Action(null,this.account.publicKey,'GATHER', 1, 0);
+                let action = new Action(null, this.account.publicKey, 'GATHER', 1, 0);
                 action.signature = sign(action.hash, this.account.privateKey)
                 if (action.hasValidSignature()) {
                     this.$socket.emit('ACTION_BROADCAST', {blockchainName: name, action: action.toJSON()})

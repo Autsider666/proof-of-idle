@@ -73,7 +73,7 @@ class Blockchain {
         block.utxoPool = newUtxoPool;
 
         // Add coinbase coin to the pool
-        block.utxoPool.addUTXO(block.creator, 12.5);
+        block.utxoPool.addUTXO(block.creator, 2);
 
         // Reapply actions to validate them
         const actions = block.actions;

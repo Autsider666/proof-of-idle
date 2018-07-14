@@ -1,8 +1,10 @@
 <template>
     <div v-if="block">
-        {{chain.name}} waiting: {{Object.keys(chain.pendingActions).length}}
-        <input type="text" size="64" v-model="block.nonce" readonly>
-        <button v-on:click="tryUntilFound" :disabled="disabled">Handle {{chain.name}}</button>
+        <md-field>
+            <label><span v-if="trying">Handling</span> {{Object.keys(chain.pendingActions).length}} {{chain.name}} <span v-if="!trying">ready for processing</span></label>
+            <md-input v-model="block.nonce" readonly :disabled="!trying"></md-input>
+        </md-field>
+        <md-button class="md-raised" v-on:click="tryUntilFound" :disabled="disabled">Handle {{chain.name}}</md-button>
     </div>
 </template>
 
@@ -17,16 +19,18 @@
         data () {
             return {
                 block: null,
+                trying:false,
             }
         },
         computed: {
             publicKey: sync('account.publicKey'),
             disabled(){
-                return Object.keys(this.chain.pendingActions).length === 0 || this.block.isValid()
+                return Object.keys(this.chain.pendingActions).length === 0 || this.block.isValid() || this.trying
             },
         },
         methods: {
             tryUntilFound() {
+                this.trying = true;
                 if (!this.block.isValid()) {
                     for (let i in this.chain.pendingActions) {
                         let action = this.chain.pendingActions[i]
@@ -42,6 +46,7 @@
                         return;
                     }
                 }
+                this.trying = false
                 this.chain._addBlock(this.block)
                 this.$socket.emit("BLOCKS_BROADCAST", {
                     blocks: [this.block.toJSON()],

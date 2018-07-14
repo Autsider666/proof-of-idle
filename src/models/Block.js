@@ -51,7 +51,7 @@ class Block {
             utxoPool: this.utxoPool.clone(),
             creator
         })
-        block.utxoPool.addUTXO(creator, 12.5);
+        block.utxoPool.addUTXO(creator, 2);
 
         return block;
     }

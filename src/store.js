@@ -7,7 +7,13 @@ import {actionFromJSON} from './models/Action'
 
 Vue.use(Vuex)
 
-let stockBlockchain = new Blockchain('Stone')
+let chains = []
+let materials = [
+    {name: 'Stone'},
+    {name: 'Wood'},
+    {name: 'Iron'},
+]
+materials.forEach(({name}) => chains.push(new Blockchain(name)))
 
 export default new Vuex.Store({
     plugins: [pathify.plugin],
@@ -15,8 +21,9 @@ export default new Vuex.Store({
         connect: false,
         chat: [],
         players: 0,
-        blockchains: [stockBlockchain],
-        selectedBlockchain: stockBlockchain,
+        blockchains: chains,
+        materials: materials,
+        // selectedBlockchain: chains,
         account: window.localStorage.getItem('account') ? JSON.parse(window.localStorage.getItem('account')) : {},
     },
     mutations: {
@@ -83,10 +90,10 @@ export default new Vuex.Store({
                 }
             }
         },
-        SOCKET_SEND_CHAT_MESSAGE(state,data) {
-            if (data[0] && data[0].message)  {
+        SOCKET_SEND_CHAT_MESSAGE(state, data) {
+            if (data[0] && data[0].message) {
                 state.chat.unshift(data[0])
-                console.log('message',data[0])
+                console.log('message', data[0])
             }
         }
     },
