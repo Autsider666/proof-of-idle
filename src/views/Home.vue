@@ -1,18 +1,36 @@
 <template>
-  <div class="home">
-    <img src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div class="home">
+        <account></account>
+        <div v-if="account.privateKey">
+            <chat></chat>
+            <p>
+                <gatherer v-for="chain in blockchains" :chain="chain"></gatherer>
+            </p>
+            <p>
+                <leader v-for="chain in blockchains" :chain="chain"></leader>
+            </p>
+        </div>
+    </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+    import Account from '../components/Account.vue'
+    import Chat from '../components/Chat.vue'
+    import Gatherer from '../components/Gatherer.vue'
+    import Leader from '../components/Leader.vue'
+    import {sync} from 'vuex-pathify'
 
-export default {
-  name: 'home',
-  components: {
-    HelloWorld
-  }
-}
+    export default {
+        name: 'home',
+        components: {
+            Account,
+            Chat,
+            Gatherer,
+            Leader,
+        },
+        computed: {
+            blockchains: sync('blockchains'),
+            account: sync('account')
+        }
+    }
 </script>
